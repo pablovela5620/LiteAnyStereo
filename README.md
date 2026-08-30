@@ -1,3 +1,15 @@
+## Run with pixi
+
+Install the reproducible CUDA 13 environment and run a task:
+
+```bash
+pixi install
+pixi run demo-upstream
+pixi run demo-upstream-h
+pixi run eval
+pixi run eval-h
+```
+
 <h1 align="center">Lite Any Stereo Series</h1>
 
 <p align="center">

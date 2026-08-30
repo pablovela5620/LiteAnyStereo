@@ -1,0 +1,47 @@
+# Public tasks: demo, demo-upstream, demo-upstream-h, eval, eval-h
+
+[workspace]
+channels = ["https://prefix.dev/conda-forge"]
+name = "liteanystereo"
+platforms = [{ name = "linux-64-cuda13", platform = "linux-64", cuda = "13.0", glibc = "2.35" }]
+requires-pixi = ">=0.73"
+
+[dependencies]
+python = "3.12.*"
+cuda-version = "13.0.*"
+pytorch-gpu = ">=2.12,<2.13"
+torchvision = "*"
+numpy = "*"
+scipy = "*"
+py-opencv = "*"
+imageio = "*"
+pandas = "*"
+joblib = "*"
+open3d = ">=0.19.0,<0.20"
+trimesh = "*"
+timm = ">=1.0,<2"
+transformations = "*"
+huggingface_hub = "*"
+hf-transfer = "*"
+tyro = ">=0.9.1,<0.10"
+pillow = "*"
+jaxtyping = "*"
+typing-extensions = ">=4.1,<4.16"
+
+[pypi-dependencies]
+thop = "*"
+rerun-sdk = { version = "==0.36.2", extras = ["datafusion"] }
+simplecv = { git = "https://github.com/rerun-io/examples-monorepo", branch = "main", subdirectory = "packages/simplecv" }
+
+[activation.env]
+HF_HUB_ENABLE_HF_TRANSFER = "1"
+LD_LIBRARY_PATH = "$CONDA_PREFIX/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+
+[tasks]
+_download-checkpoints = "test -f checkpoints/LAS2_M.pth && test -f checkpoints/LAS2_H.pth || python download_checkpoint.py --files LAS2_M.pth LAS2_H.pth"
+_download-data = "test -f data/datasets/ETH3D/two_view_training/playground_1l/im0.png || hf download pablovela5620/monoprior-example --include 'stereo/eth3d/*' --repo-type dataset --local-dir data/hf && mkdir -p data/datasets/ETH3D && cp -r data/hf/stereo/eth3d/two_view_training data/hf/stereo/eth3d/two_view_training_gt data/datasets/ETH3D/"
+demo-upstream = { cmd = "python demo.py --version las2 --model_size m --restore_ckpt ./checkpoints/LAS2_M.pth", depends-on = ["_download-checkpoints"] }
+demo-upstream-h = { cmd = "python demo.py --version las2 --model_size h --restore_ckpt ./checkpoints/LAS2_H.pth", depends-on = ["_download-checkpoints"] }
+eval = { cmd = "python evaluate_stereo.py --version las2 --model_size m --restore_ckpt ./checkpoints/LAS2_M.pth --dataset eth3d", depends-on = ["_download-checkpoints", "_download-data"] }
+eval-h = { cmd = "python evaluate_stereo.py --version las2 --model_size h --restore_ckpt ./checkpoints/LAS2_H.pth --dataset eth3d", depends-on = ["_download-checkpoints", "_download-data"] }
+demo = { cmd = "echo \"demo_rerun.py comes in the next step\"", depends-on = ["_download-checkpoints", "_download-data"] }

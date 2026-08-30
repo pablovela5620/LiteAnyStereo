@@ -29,3 +29,9 @@ wandb/
 # Test output
 *.png
 !assets/**/*.png
+
+.pixi/
+checkpoints/
+data/
+output-vis/
+*.rrd
