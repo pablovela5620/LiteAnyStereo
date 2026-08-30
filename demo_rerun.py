@@ -117,7 +117,7 @@ def main(cfg: Config) -> None:
     rr.send_blueprint(
         rrb.Blueprint(
             rrb.Horizontal(
-                rrb.Spatial3DView(origin="world", contents=["$origin/**", f"- {left_path}/pinhole/image", f"- {right_path}/pinhole/image", f"- {left_path}/disparity", f"- {left_path}/disparity_gt", f"- {left_path}/disparity_error"]),
+                rrb.Spatial3DView(origin="world", contents=["$origin/**", f"- {left_path}/disparity", f"- {left_path}/disparity_gt", f"- {left_path}/disparity_error"]),
                 rrb.Vertical(
                     rrb.Horizontal(rrb.Spatial2DView(origin=f"{left_path}/pinhole/image", name="left"), rrb.Spatial2DView(origin=f"{right_path}/pinhole/image", name="right")),
                     rrb.Spatial2DView(origin=f"{left_path}/pinhole/depth", name="depth (m)"),
