@@ -1,4 +1,4 @@
-# Public tasks: demo, demo-upstream, demo-upstream-h, eval, eval-h
+# Public tasks: demo (canonical: downloads checkpoints + ETH3D sample, runs demo_rerun.py), demo-h, demo-upstream, demo-upstream-h, eval, eval-h
 
 [workspace]
 channels = ["https://prefix.dev/conda-forge"]
@@ -26,6 +26,10 @@ hf-transfer = "*"
 tyro = ">=0.9.1,<0.10"
 pillow = "*"
 jaxtyping = "*"
+# simplecv runtime deps the monorepo supplies via its `common` feature (not in simplecv metadata)
+av = "*"
+pyarrow = "*"
+einops = "*"
 typing-extensions = ">=4.1,<4.16"
 
 [pypi-dependencies]
@@ -44,4 +48,5 @@ demo-upstream = { cmd = "python demo.py --version las2 --model_size m --restore_
 demo-upstream-h = { cmd = "python demo.py --version las2 --model_size h --restore_ckpt ./checkpoints/LAS2_H.pth", depends-on = ["_download-checkpoints"] }
 eval = { cmd = "python evaluate_stereo.py --version las2 --model_size m --restore_ckpt ./checkpoints/LAS2_M.pth --dataset eth3d", depends-on = ["_download-checkpoints", "_download-data"] }
 eval-h = { cmd = "python evaluate_stereo.py --version las2 --model_size h --restore_ckpt ./checkpoints/LAS2_H.pth --dataset eth3d", depends-on = ["_download-checkpoints", "_download-data"] }
-demo = { cmd = "echo \"demo_rerun.py comes in the next step\"", depends-on = ["_download-checkpoints", "_download-data"] }
+demo = { cmd = "python demo_rerun.py", depends-on = ["_download-checkpoints", "_download-data"] }
+demo-h = { cmd = "python demo_rerun.py --model-size h", depends-on = ["_download-checkpoints", "_download-data"] }

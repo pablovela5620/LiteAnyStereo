@@ -1,14 +1,16 @@
-## Run with pixi
+## Run with pixi (this fork)
 
-Install the reproducible CUDA 13 environment and run a task:
+Reproducible CUDA 13 environment (pins match [rerun-io/examples-monorepo](https://github.com/rerun-io/examples-monorepo)); one command downloads the LAS2-M/H checkpoints and one calibrated ETH3D stereo pair, runs LiteAnyStereo V2, and opens the result in [Rerun](https://rerun.io):
 
 ```bash
-pixi install
-pixi run demo-upstream
-pixi run demo-upstream-h
-pixi run eval
-pixi run eval-h
+git clone https://github.com/pablovela5620/LiteAnyStereo.git && cd LiteAnyStereo
+pixi run demo                                  # LAS2-M on ETH3D playground_1l → Rerun viewer
+pixi run demo-h                                # LAS2-H
+pixi run demo --rr-config.save out.rrd         # save a recording instead / as well (see --help)
 ```
+
+Other tasks: `demo-upstream` / `demo-upstream-h` (unchanged upstream `demo.py` on the ZED sample), `eval` / `eval-h` (upstream `evaluate_stereo.py` on the single ETH3D scene; paper ETH3D bad1 is 2.59 / 1.83 over all scenes).
+`main` on this fork is untouched upstream; the `pixi` branch adds only `pixi.toml`, `pixi.lock`, `.gitignore`, `demo_rerun.py`, `NOTES.md`, and this section.
 
 <h1 align="center">Lite Any Stereo Series</h1>
 
