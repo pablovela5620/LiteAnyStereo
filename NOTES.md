@@ -16,7 +16,21 @@ Work branch: `pixi` (default branch of the fork).
 - sample: ETH3D `two_view_training.7z` + `two_view_training_gt.7z` (14 MB each), `pixi exec -s 7zip -- 7z x`, `hf upload pablovela5620/monoprior-example <dir> stereo --repo-type dataset`
 
 ## Upstream edits
-(filled in from the Codex report)
+None. `git diff main -- '*.py'` is empty except the new `demo_rerun.py`. README got one section, .gitignore four lines.
 
-## Reproduction
-(filled in after eval)
+## Gotchas found
+- `simplecv` from git does not carry its runtime deps (`av`, `pyarrow`, `einops` come from the monorepo `common` feature) → add them explicitly.
+- `simplecv` needs `pyserde<0.32` → `typing-extensions<4.16`; conda picked 4.16 first, pin `typing-extensions = ">=4.1,<4.16"`.
+- `thop` is not on conda-forge (only `ultralytics-thop`) → pypi.
+- Rerun: 2D-only entities (disparity/GT/error) under a `$origin/**` 3D view raise "2D visualizers require a pinhole ancestor" → exclude them from the 3D view contents.
+- Sub-pixel disparities (sky) give km-scale depth that streaks the point cloud → drop depth > `max_depth_m` (20 m) before logging.
+- ETH3D two-view scenes ship Middlebury-v3 `calib.txt` (baseline in mm) → full rig + backprojection without extra data.
+- Codex sandbox intermittently hides the CUDA virtual package; the elevated host probe was fine.
+
+## Reproduction (ETH3D playground_1l, non-occluded, gt < 192; paper numbers are dataset means)
+| model | EPE px | bad1 % | paper ETH3D bad1 |
+|---|---|---|---|
+| LAS2-M | 0.350 | 2.24 | 2.59 |
+| LAS2-H | 0.250 | 1.12 | 1.83 |
+`demo_rerun.py`'s in-script metrics equal upstream `evaluate_stereo.py` to the printed digit.
+Fresh `git clone` → `pixi run demo`: 11 s with a warm pixi cache (env from lock 9 s).
